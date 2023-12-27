@@ -7,21 +7,29 @@ from django.contrib.auth.models import AbstractBaseUser,BaseUserManager,Permissi
 from django.core.validators import EmailValidator
 from datetime import datetime, timedelta
 from .utils import generate_pin
-
+from .manager import CustomUserManager
 # Create your models here.
+
+
+
+
 class CustomUser(AbstractBaseUser,PermissionsMixin):
     email = models.EmailField(max_length=50,blank=True,null=True,unique=True)
-    is_active = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    is_verified = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
+    objects = CustomUserManager()
 
     def __str__(self) -> str:
         return self.email
     
 class Profile(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, primary_key=True)
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, unique=True)
+    first_name = models.CharField(max_length=225,null=True)
+    last_name = models.CharField(max_length=225, null=True)
     bio = models.TextField(blank=True)
 
 

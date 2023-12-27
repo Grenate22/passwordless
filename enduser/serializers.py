@@ -9,35 +9,21 @@ from .models import CustomUser, Pin, Profile
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = '__all__'
+        fields = ["id","bio","first_name","last_name"]
+
+    def create(self, validated_data):
+        user_id = self.context['user_id']
+        return Profile.objects.create(user_id=user_id, **validated_data)
     
+
+
 class UserSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer(required=False)
 
     class Meta:
         model = CustomUser
-        fields = ['email', 'first_name', 'last_name', 'profile']
+        fields = "__all__"
 
-    def create(self, validated_data):
-        profile_data = validated_data.pop('profile', {})
-        user = CustomUser.objects.create(**validated_data)
-        Profile.objects.create(user=user, **profile_data)
-        return user
-
-
-    
-class UserSerializer(serializers.ModelSerializer):
-    profile = ProfileSerializer(required=False)
-
-    class Meta:
-        model = CustomUser
-        fields = ['email', 'first_name', 'last_name', 'profile']
-
-    def create(self, validated_data):
-        profile_data = validated_data.pop('profile', {})
-        user = CustomUser.objects.create(**validated_data)
-        Profile.objects.create(user=user, **profile_data)
-        return user
 
 class RegisterVerifySerializer(serializers.ModelSerializer):
      email = serializers.EmailField()

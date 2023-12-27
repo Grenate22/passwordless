@@ -3,7 +3,10 @@ from rest_framework import routers
 from . import views
 
 router = routers.SimpleRouter()
-router.register('Registration',views.RegistrationViewSet)
+router.register('registration',views.RegistrationViewSet)
+router.register('profile',views.ProfileViewSet,basename="profile")
+router.register('',views.UserViewSet)
+
 
 urlpatterns = router.urls
 
