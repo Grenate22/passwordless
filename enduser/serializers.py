@@ -1,9 +1,8 @@
+
+from django.shortcuts import get_object_or_404
 from rest_framework import serializers
-from datetime import timezone
-from .send_mail import send_verification_email
-from .utils import generate_pin
-from django.core.validators import EmailValidator
 from .models import CustomUser, Pin, Profile
+from .exception import EmailNotValid
 
     
 class ProfileSerializer(serializers.ModelSerializer):
@@ -35,19 +34,21 @@ class RegisterVerifySerializer(serializers.ModelSerializer):
          
 
      def validate(self, data):
-          pin = Pin.objects.get(email=data['email'])
-          print(f"pin received from the end {pin.otp}")
-          if not pin:
+        try:
+            pin = Pin.objects.get(email=data['email'])
+            if not pin:
                raise serializers.ValidationError("Invalid OTP or OTP expired")
-          
-          
-          if pin.otp != data["otp"]:
+            if pin.otp != data["otp"]:
                pin.attempt_count +=1
                pin.save()
                raise serializers.ValidationError('Invalid OTP')
           
-          pin.delete()
-          return data
+            pin.delete()
+            return data
+        except Pin.DoesNotExist :
+            raise serializers.ValidationError("Email is not valid")
+          
+          
 
 class EmailSerializer(serializers.Serializer):
     email = serializers.EmailField()

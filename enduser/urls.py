@@ -5,11 +5,11 @@ from . import views
 router = routers.SimpleRouter()
 router.register('registration',views.RegistrationViewSet)
 router.register('profile',views.ProfileViewSet,basename="profile")
-router.register('',views.UserViewSet)
+router.register('users',views.UserViewSet)
 
 
 urlpatterns = router.urls
 
 urlpatterns += [
-    # path('verify_otp/',views.UserViewSet.as_view({'post':'verify_otp'}), name='verify-otp')
+    path('full_verified/',views.CustomView.as_view(), name='fully_verified')
 ]

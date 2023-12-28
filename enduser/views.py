@@ -1,15 +1,9 @@
-from django.shortcuts import render
-from datetime import timezone
-from django.contrib.auth.tokens import default_token_generator
-from django.utils.encoding import force_bytes
-from django.utils.http import urlsafe_base64_encode
-from django.template.loader import render_to_string
-from rest_framework.mixins import CreateModelMixin
 from rest_framework.decorators import api_view,action
-from rest_framework.viewsets import ModelViewSet,GenericViewSet
-from rest_framework.permissions import IsAuthenticated,IsAdminUser
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.permissions import IsAuthenticated,IsAdminUser,AllowAny
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.views import APIView
 from .models import CustomUser, Pin, Profile
 from .serializers import EmailSerializer,RegisterVerifySerializer, ProfileSerializer, UserSerializer
 from .send_mail import send_verification_email
@@ -20,6 +14,7 @@ from .permission import IsFullyAuthenticated
 class RegistrationViewSet(ModelViewSet):
     queryset = Pin.objects.all()
     serializer_class = EmailSerializer
+    permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
         serializer = EmailSerializer(data=request.data)
@@ -71,4 +66,12 @@ class UserViewSet(ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
 
+
+class CustomView(APIView):
+    permission_classes = [IsFullyAuthenticated]
+
+    def get(self,request):
+        domain = request.get_host().split(":")[0]
+        print(f"hello {domain}")
+        return Response({"message":domain})
     

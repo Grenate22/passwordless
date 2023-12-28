@@ -1,6 +1,5 @@
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
-from mail_templated import EmailMessage
 
 
 def send_verification_email(pin):
