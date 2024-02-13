@@ -139,10 +139,10 @@ MAX_OTP_TRY = 3
 
 AUTH_USER_MODEL = 'enduser.CustomUser'
 
-EMAIL_HOST = 'localhost'
+EMAIL_HOST = 'smtp'
 EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
-EMAIL_PORT = 2525
+EMAIL_PORT = 25
 DEFAULT_FROM_EMAIL = 'info@grnate.com'
 
 REST_FRAMEWORK = {
